@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Visuya Admin Panel</title>
+<link rel="stylesheet" href="admin.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body class="admin-body">
+
+<!-- ========== SIDEBAR ========== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo"><span class="logo-v">V</span><span>visuya</span></div>
+    <small>ADMIN PANEL</small>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-link active" data-section="dashboard">
+      <i class="fas fa-home"></i><span>Dashboard</span>
+    </a>
+
+    <div class="nav-group-label">CONTENT</div>
+
+    <div class="nav-group" id="grp-posts">
+      <a href="#" class="nav-link nav-parent" data-toggle="posts-sub">
+        <i class="fas fa-file-alt"></i><span>Posts</span><i class="fas fa-chevron-down toggle-icon"></i>
+      </a>
+      <div class="nav-sub" id="posts-sub">
+        <a href="#" class="nav-sub-link" data-section="all-posts"><i class="fas fa-list"></i> All Posts</a>
+        <a href="#" class="nav-sub-link" data-section="add-post"><i class="fas fa-plus"></i> Add New Post</a>
+        <a href="#" class="nav-sub-link" data-section="categories"><i class="fas fa-folder"></i> Categories</a>
+        <a href="#" class="nav-sub-link" data-section="tags"><i class="fas fa-tags"></i> Tags</a>
+      </div>
+    </div>
+
+    <a href="#" class="nav-link" data-section="media">
+      <i class="fas fa-photo-video"></i><span>Media Library</span>
+    </a>
+    <a href="#" class="nav-link" data-section="pages">
+      <i class="fas fa-copy"></i><span>Pages</span>
+    </a>
+    <a href="#" class="nav-link" data-section="comments">
+      <i class="fas fa-comments"></i><span>Comments</span>
+      <span class="badge-count" id="commentsBadge">0</span>
+    </a>
+    <a href="#" class="nav-link" data-section="newsletter">
+      <i class="fas fa-envelope"></i><span>Newsletter</span>
+    </a>
+
+    <div class="nav-group-label">MANAGEMENT</div>
+    <a href="#" class="nav-link" data-section="users">
+      <i class="fas fa-users"></i><span>Users</span>
+    </a>
+    <a href="#" class="nav-link" data-section="ads">
+      <i class="fas fa-ad"></i><span>Ads Management</span>
+    </a>
+    <a href="#" class="nav-link" data-section="menus">
+      <i class="fas fa-bars"></i><span>Menus</span>
+    </a>
+    <a href="#" class="nav-link" data-section="settings">
+      <i class="fas fa-cog"></i><span>Settings</span>
+    </a>
+
+    <div class="nav-group-label">TOOLS</div>
+    <a href="#" class="nav-link" data-section="seo">
+      <i class="fas fa-search"></i><span>SEO Analyzer</span>
+    </a>
+    <a href="#" class="nav-link" data-section="analytics">
+      <i class="fas fa-chart-bar"></i><span>Analytics</span>
+    </a>
+    <a href="#" class="nav-link" data-section="backup">
+      <i class="fas fa-database"></i><span>Backup</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="index.html" class="nav-link" target="_blank">
+      <i class="fas fa-external-link-alt"></i><span>View Site</span>
+    </a>
+    <a href="#" class="nav-link logout" onclick="handleLogout()">
+      <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+    </a>
+  </div>
+</aside>
+
+<!-- ========== MAIN ========== -->
+<div class="admin-main" id="adminMain">
+
+  <!-- TOP BAR -->
+  <header class="admin-topbar">
+    <div class="topbar-left">
+      <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="topbar-search">
+        <i class="fas fa-search"></i>
+        <input type="text" id="globalSearch" placeholder="Search anything..." oninput="globalSearchFn(this.value)"/>
+        <div class="search-results" id="searchResults"></div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-new-post" onclick="navigate('add-post')">
+        <i class="fas fa-plus"></i> New Post
+      </button>
+      <button class="icon-btn notif-btn" onclick="toggleNotif()">
+        <i class="fas fa-bell"></i>
+        <span class="notif-dot" id="notifDot"></span>
+      </button>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-header"><strong>Notifications</strong><button onclick="clearNotifs()">Clear all</button></div>
+        <div id="notifList"></div>
+      </div>
+      <button class="icon-btn" id="darkToggle" onclick="toggleDark()">
+        <i class="fas fa-moon" id="darkIcon"></i>
+      </button>
+      <div class="user-menu" onclick="toggleUserMenu()">
+        <div class="user-avatar" id="topAvatar">R</div>
+        <div class="user-info">
+          <span id="topUserName">Rohan Sharma</span>
+          <small id="topUserRole">Admin</small>
+        </div>
+        <i class="fas fa-chevron-down"></i>
+        <div class="user-dropdown" id="userDropdown">
+          <a href="#" onclick="navigate('settings')"><i class="fas fa-user-cog"></i> Profile</a>
+          <a href="#" onclick="navigate('settings')"><i class="fas fa-cog"></i> Settings</a>
+          <hr/>
+          <a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT AREA -->
+  <div class="admin-content" id="adminContent">
+
+    <!-- ====== DASHBOARD ====== -->
+    <section class="section-panel" id="sec-dashboard">
+      <div class="page-header-bar">
+        <h1>Dashboard</h1>
+        <span class="breadcrumb">Home / Dashboard</span>
+      </div>
+      <div class="stats-row" id="statsRow"></div>
+      <div class="dashboard-grid">
+        <div class="dash-main">
+          <div class="card">
+            <div class="card-head">
+              <h3>All Posts</h3>
+              <div class="card-head-actions">
+                <input type="text" class="mini-search" placeholder="Search posts..." id="dashPostSearch" oninput="renderPostsTable(this.value)"/>
+                <button class="btn-sm btn-primary" onclick="navigate('add-post')"><i class="fas fa-plus"></i> New Post</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" id="postsTable">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"/></th>
+                    <th>TITLE</th><th>AUTHOR</th><th>CATEGORY</th>
+                    <th>STATUS</th><th>VIEWS</th><th>DATE</th><th>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody id="postsTableBody"></tbody>
+              </table>
+            </div>
+            <div class="pagination-bar" id="postsPagination"></div>
+          </div>
+        </div>
+        <div class="dash-side">
+          <!-- Quick Actions -->
+          <div class="card quick-actions-card">
+            <h3>QUICK ACTIONS</h3>
+            <button class="quick-btn" onclick="navigate('add-post')"><i class="fas fa-plus"></i> Add New Post</button>
+            <button class="quick-btn" onclick="navigate('pages')"><i class="fas fa-file"></i> Add New Page</button>
+            <button class="quick-btn" onclick="navigate('media')"><i class="fas fa-upload"></i> Upload Media</button>
+            <button class="quick-btn" onclick="navigate('categories')"><i class="fas fa-folder"></i> Manage Categories</button>
+            <button class="quick-btn" onclick="navigate('tags')"><i class="fas fa-tags"></i> Manage Tags</button>
+          </div>
+          <!-- Content Overview Donut -->
+          <div class="card">
+            <h3>CONTENT OVERVIEW</h3>
+            <div class="donut-wrap">
+              <svg viewBox="0 0 120 120" class="donut-svg" id="donutSvg">
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#e2e8f0" stroke-width="14"/>
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#10b981" stroke-width="14" stroke-dasharray="264" stroke-dashoffset="33" stroke-linecap="round" transform="rotate(-90 60 60)" id="donutPublished"/>
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#f59e0b" stroke-width="14" stroke-dasharray="264" stroke-dashoffset="244" stroke-linecap="round" transform="rotate(-90 60 60)" id="donutDraft"/>
+                <text x="60" y="58" text-anchor="middle" font-size="18" font-weight="800" fill="#1e293b" id="donutTotal">0</text>
+                <text x="60" y="72" text-anchor="middle" font-size="9" fill="#64748b">Total</text>
+              </svg>
+              <div class="donut-legend" id="donutLegend"></div>
+            </div>
+          </div>
+          <!-- Top Categories -->
+          <div class="card">
+            <h3>TOP CATEGORIES</h3>
+            <div id="topCategoriesList"></div>
+            <a href="#" class="view-link" onclick="navigate('categories')">View all categories →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== ALL POSTS ====== -->
+    <section class="section-panel hidden" id="sec-all-posts">
+      <div class="page-header-bar">
+        <h1>All Posts</h1>
+        <button class="btn-primary" onclick="navigate('add-post')"><i class="fas fa-plus"></i> Add New Post</button>
+      </div>
+      <div class="filter-bar">
+        <select id="filterCat" onchange="applyFilters()"><option value="">All Categories</option></select>
+        <select id="filterAuthor" onchange="applyFilters()"><option value="">All Authors</option></select>
+        <select id="filterStatus" onchange="applyFilters()">
+          <option value="">All Status</option>
+          <option value="Published">Published</option>
+          <option value="Draft">Draft</option>
+          <option value="Scheduled">Scheduled</option>
+        </select>
+        <input type="date" id="filterDate" onchange="applyFilters()"/>
+        <div class="search-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" id="allPostsSearch" placeholder="Search posts..." oninput="applyFilters()"/>
+        </div>
+        <button class="btn-outline" onclick="bulkDelete()"><i class="fas fa-trash"></i> Bulk Delete</button>
+      </div>
+      <div class="card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll2" onchange="toggleSelectAll2(this)"/></th>
+                <th>TITLE</th><th>AUTHOR</th><th>CATEGORY</th>
+                <th>STATUS</th><th>VIEWS</th><th>DATE</th><th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="allPostsBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination-bar" id="allPostsPagination"></div>
+      </div>
+    </section>
+
+    <!-- ====== ADD / EDIT POST ====== -->
+    <section class="section-panel hidden" id="sec-add-post">
+      <div class="page-header-bar">
+        <h1 id="postEditorTitle">Add New Post</h1>
+        <div class="header-actions">
+          <button class="btn-outline" onclick="savePostDraft()"><i class="fas fa-save"></i> Save Draft</button>
+          <button class="btn-primary" onclick="publishPost()"><i class="fas fa-globe"></i> Publish</button>
+        </div>
+      </div>
+      <div class="editor-layout">
+        <div class="editor-main">
+          <!-- Post Title -->
+          <div class="card editor-card">
+            <input type="text" id="postTitle" class="post-title-input" placeholder="Enter post title here..."/>
+            <div class="post-slug-row">
+              <span>Slug:</span>
+              <input type="text" id="postSlug" class="slug-input" placeholder="post-slug"/>
+              <button onclick="generateSlug()"><i class="fas fa-sync-alt"></i></button>
+            </div>
+          </div>
+
+          <!-- Rich Text Editor -->
+          <div class="card editor-card">
+            <div class="editor-toolbar">
+              <div class="toolbar-group">
+                <button title="Bold" onclick="fmt('bold')"><i class="fas fa-bold"></i></button>
+                <button title="Italic" onclick="fmt('italic')"><i class="fas fa-italic"></i></button>
+                <button title="Underline" onclick="fmt('underline')"><i class="fas fa-underline"></i></button>
+                <button title="Strikethrough" onclick="fmt('strikeThrough')"><i class="fas fa-strikethrough"></i></button>
+              </div>
+              <div class="toolbar-sep"></div>
+              <div class="toolbar-group">
+                <select onchange="fmt('formatBlock', this.value); this.value=''">
+                  <option value="">Paragraph</option>
+                  <option value="h1">Heading 1</option>
+                  <option value="h2">Heading 2</option>
+                  <option value="h3">Heading 3</option>
+                  <option value="h4">Heading 4</option>
+                  <option value="blockquote">Blockquote</option>
+                  <option value="pre">Code Block</option>
+                </select>
+                <select onchange="fmt('fontSize', this.value); this.value=''">
+                  <option value="">Font Size</option>
+                  <option value="1">Small</option>
+                  <option value="3">Normal</option>
+                  <option value="5">Large</option>
+                  <option value="7">X-Large</option>
+                </select>
+              </div>
+              <div class="toolbar-sep"></div>
+              <div class="toolbar-group">
+                <button title="Align Left" onclick="fmt('justifyLeft')"><i class="fas fa-align-left"></i></button>
+                <button title="Align Center" onclick="fmt('justifyCenter')"><i class="fas fa-align-center"></i></button>
+                <button title="Align Right" onclick="fmt('justifyRight')"><i class="fas fa-align-right"></i></button>
+              </div>
+              <div class="toolbar-sep"></div>
+              <div class="toolbar-group">
+                <button title="Ordered List" onclick="fmt('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
+                <button title="Unordered List" onclick="fmt('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                <button title="Indent" onclick="fmt('indent')"><i class="fas fa-indent"></i></button>
+                <button title="Outdent" onclick="fmt('outdent')"><i class="fas fa-outdent"></i></button>
+              </div>
+              <div class="toolbar-sep"></div>
+              <div class="toolbar-group">
+                <button title="Insert Link" onclick="insertLink()"><i class="fas fa-link"></i></button>
+                <button title="Insert Image" onclick="document.getElementById('editorImageUpload').click()"><i class="fas fa-image"></i></button>
+                <button title="Insert YouTube Video" onclick="showYouTubeModal()"><i class="fab fa-youtube"></i></button>
+                <button title="Insert Table" onclick="insertTable()"><i class="fas fa-table"></i></button>
+                <button title="Horizontal Rule" onclick="fmt('insertHorizontalRule')"><i class="fas fa-minus"></i></button>
+              </div>
+              <div class="toolbar-sep"></div>
+              <div class="toolbar-group">
+                <input type="color" id="textColor" title="Text Color" onchange="fmt('foreColor', this.value)" style="width:30px;height:30px;border:none;cursor:pointer;border-radius:4px;"/>
+                <input type="color" id="bgColor" title="Highlight Color" onchange="fmt('hiliteColor', this.value)" style="width:30px;height:30px;border:none;cursor:pointer;border-radius:4px;"/>
+              </div>
+              <div class="toolbar-sep"></div>
+              <div class="toolbar-group">
+                <button title="Undo" onclick="fmt('undo')"><i class="fas fa-undo"></i></button>
+                <button title="Redo" onclick="fmt('redo')"><i class="fas fa-redo"></i></button>
+                <button title="Remove Formatting" onclick="fmt('removeFormat')"><i class="fas fa-remove-format"></i></button>
+                <button title="Source Code" onclick="toggleSource()" id="sourceBtn"><i class="fas fa-code"></i></button>
+              </div>
+            </div>
+            <div contenteditable="true" id="richEditor" class="rich-editor" spellcheck="true"></div>
+            <textarea id="sourceEditor" class="source-editor hidden"></textarea>
+            <input type="file" id="editorImageUpload" accept="image/*" hidden onchange="insertEditorImage(this)"/>
+            <div class="editor-footer">
+              <span id="wordCount">0 words</span>
+              <span id="charCount">0 chars</span>
+            </div>
+          </div>
+
+          <!-- YouTube Video -->
+          <div class="card editor-card">
+            <h3 class="card-section-title"><i class="fab fa-youtube youtube-red"></i> Embed YouTube Video</h3>
+            <div class="youtube-embed-row">
+              <input type="text" id="ytLinkInput" placeholder="Paste YouTube URL (e.g. https://youtube.com/watch?v=...)"/>
+              <button class="btn-primary" onclick="embedYouTube()"><i class="fas fa-plus"></i> Embed</button>
+            </div>
+            <div id="ytPreview" class="yt-preview"></div>
+          </div>
+
+          <!-- Featured Image -->
+          <div class="card editor-card">
+            <h3 class="card-section-title"><i class="fas fa-image"></i> Featured Image</h3>
+            <div class="featured-img-drop" id="featImgDrop" onclick="document.getElementById('featImgInput').click()"
+              ondragover="event.preventDefault()" ondrop="handleFeatImgDrop(event)">
+              <img id="featImgPreview" src="" alt="" style="display:none;max-height:220px;border-radius:8px;width:100%;object-fit:cover;"/>
+              <div id="featImgPlaceholder">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click or drag & drop to upload</p>
+                <small>JPG, PNG, GIF, WebP – Max 5MB</small>
+              </div>
+              <input type="file" id="featImgInput" accept="image/*" hidden onchange="handleFeatImgUpload(this)"/>
+            </div>
+            <button class="btn-danger-sm" id="removeFeatImg" onclick="removeFeaturedImage()" style="display:none;margin-top:8px">
+              <i class="fas fa-trash"></i> Remove Image
+            </button>
+          </div>
+
+          <!-- SEO -->
+          <div class="card editor-card">
+            <h3 class="card-section-title"><i class="fas fa-search"></i> SEO Settings</h3>
+            <div class="form-group">
+              <label>Meta Title</label>
+              <input type="text" id="seoTitle" placeholder="SEO title (max 60 chars)" maxlength="60"/>
+              <small id="seoTitleCount">0/60</small>
+            </div>
+            <div class="form-group">
+              <label>Meta Description</label>
+              <textarea id="seoDesc" placeholder="Meta description (max 160 chars)" maxlength="160" rows="3"></textarea>
+              <small id="seoDescCount">0/160</small>
+            </div>
+            <div class="form-group">
+              <label>Focus Keyword</label>
+              <input type="text" id="seoKeyword" placeholder="Main keyword for SEO"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="editor-side">
+          <!-- Publish Box -->
+          <div class="card publish-card">
+            <h3>Publish</h3>
+            <div class="pub-row">
+              <label>Status</label>
+              <select id="postStatus">
+                <option value="Draft">Draft</option>
+                <option value="Published">Published</option>
+                <option value="Scheduled">Scheduled</option>
+              </select>
+            </div>
+            <div class="pub-row" id="schedDateRow" style="display:none">
+              <label>Schedule Date</label>
+              <input type="datetime-local" id="schedDate"/>
+            </div>
+            <div class="pub-row">
+              <label>Author</label>
+              <select id="postAuthor"></select>
+            </div>
+            <div class="pub-actions">
+              <button class="btn-outline full-btn" onclick="savePostDraft()"><i class="fas fa-save"></i> Save Draft</button>
+              <button class="btn-primary full-btn" onclick="publishPost()"><i class="fas fa-globe"></i> Publish</button>
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="card">
+            <h3>Category</h3>
+            <div id="catCheckboxes" class="checkbox-list"></div>
+            <div class="add-inline">
+              <input type="text" id="quickCatInput" placeholder="New category name"/>
+              <button onclick="quickAddCategory()"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="card">
+            <h3>Tags</h3>
+            <div class="tag-input-wrap">
+              <input type="text" id="tagInput" placeholder="Add tag, press Enter" onkeydown="addTag(event)"/>
+            </div>
+            <div class="tags-container" id="tagsContainer"></div>
+          </div>
+
+          <!-- Excerpt -->
+          <div class="card">
+            <h3>Excerpt</h3>
+            <textarea id="postExcerpt" rows="4" placeholder="Short description of the post..."></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== MEDIA LIBRARY ====== -->
+    <section class="section-panel hidden" id="sec-media">
+      <div class="page-header-bar">
+        <h1>Media Library</h1>
+        <button class="btn-primary" onclick="document.getElementById('mediaUploadInput').click()">
+          <i class="fas fa-upload"></i> Upload Files
+        </button>
+      </div>
+      <input type="file" id="mediaUploadInput" accept="image/*,video/*" multiple hidden onchange="uploadMediaFiles(this)"/>
+      <!-- Drag Drop Zone -->
+      <div class="media-drop-zone" id="mediaDropZone"
+        ondragover="event.preventDefault(); this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="handleMediaDrop(event)">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Drag &amp; Drop files here or <button onclick="document.getElementById('mediaUploadInput').click()">Browse</button></p>
+        <small>Supported: JPG, PNG, GIF, WebP, SVG, MP4 – Max 10MB each</small>
+      </div>
+      <!-- Filter bar -->
+      <div class="media-filter">
+        <select id="mediaTypeFilter" onchange="renderMediaGrid()">
+          <option value="">All Types</option>
+          <option value="image">Images</option>
+          <option value="video">Videos</option>
+        </select>
+        <input type="text" placeholder="Search media..." id="mediaSearch" oninput="renderMediaGrid()"/>
+        <button class="icon-btn" onclick="setMediaView('grid')" title="Grid View"><i class="fas fa-th"></i></button>
+        <button class="icon-btn" onclick="setMediaView('list')" title="List View"><i class="fas fa-list"></i></button>
+      </div>
+      <div class="media-grid" id="mediaGrid"></div>
+    </section>
+
+    <!-- ====== CATEGORIES ====== -->
+    <section class="section-panel hidden" id="sec-categories">
+      <div class="page-header-bar">
+        <h1>Categories</h1>
+      </div>
+      <div class="two-col-layout">
+        <div class="card">
+          <h3>Add New Category</h3>
+          <div class="form-group"><label>Name</label><input type="text" id="newCatName" placeholder="Category name"/></div>
+          <div class="form-group"><label>Slug</label><input type="text" id="newCatSlug" placeholder="category-slug"/></div>
+          <div class="form-group"><label>Description</label><textarea id="newCatDesc" rows="3" placeholder="Category description..."></textarea></div>
+          <div class="form-group"><label>Color</label><input type="color" id="newCatColor" value="#10b981"/></div>
+          <button class="btn-primary" onclick="addCategory()"><i class="fas fa-plus"></i> Add Category</button>
+        </div>
+        <div class="card">
+          <h3>All Categories</h3>
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Slug</th><th>Posts</th><th>Actions</th></tr></thead>
+            <tbody id="catTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== TAGS ====== -->
+    <section class="section-panel hidden" id="sec-tags">
+      <div class="page-header-bar"><h1>Tags</h1></div>
+      <div class="two-col-layout">
+        <div class="card">
+          <h3>Add New Tag</h3>
+          <div class="form-group"><label>Name</label><input type="text" id="newTagName" placeholder="Tag name"/></div>
+          <div class="form-group"><label>Slug</label><input type="text" id="newTagSlug" placeholder="tag-slug"/></div>
+          <button class="btn-primary" onclick="addTag2()"><i class="fas fa-plus"></i> Add Tag</button>
+        </div>
+        <div class="card">
+          <h3>All Tags</h3>
+          <div class="tags-cloud" id="tagsCloud"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== COMMENTS ====== -->
+    <section class="section-panel hidden" id="sec-comments">
+      <div class="page-header-bar"><h1>Comments</h1></div>
+      <div class="card">
+        <div class="filter-bar">
+          <select id="commentFilter" onchange="renderComments()">
+            <option value="">All Comments</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="spam">Spam</option>
+          </select>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Author</th><th>Comment</th><th>Post</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="commentsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====== NEWSLETTER ====== -->
+    <section class="section-panel hidden" id="sec-newsletter">
+      <div class="page-header-bar"><h1>Newsletter</h1></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-users"></i></div><div><div class="stat-num" id="subCount">0</div><div class="stat-label">Subscribers</div></div></div>
+        <div class="stat-card"><div class="stat-icon green"><i class="fas fa-paper-plane"></i></div><div><div class="stat-num" id="campSent">0</div><div class="stat-label">Campaigns Sent</div></div></div>
+        <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-envelope-open"></i></div><div><div class="stat-num">68%</div><div class="stat-label">Open Rate</div></div></div>
+      </div>
+      <div class="two-col-layout">
+        <div class="card">
+          <h3>Send Campaign</h3>
+          <div class="form-group"><label>Subject</label><input type="text" id="campSubject" placeholder="Email subject"/></div>
+          <div class="form-group"><label>Message</label><textarea id="campBody" rows="6" placeholder="Campaign message..."></textarea></div>
+          <button class="btn-primary" onclick="sendCampaign()"><i class="fas fa-paper-plane"></i> Send to All Subscribers</button>
+        </div>
+        <div class="card">
+          <h3>Subscribers</h3>
+          <div class="form-group">
+            <input type="email" id="addSubEmail" placeholder="Add subscriber email" style="width:100%"/>
+            <button class="btn-sm btn-primary" onclick="addSubscriber()" style="margin-top:8px">Add</button>
+          </div>
+          <ul class="subscriber-list" id="subscriberList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== PAGES ====== -->
+    <section class="section-panel hidden" id="sec-pages">
+      <div class="page-header-bar">
+        <h1>Pages</h1>
+        <button class="btn-primary" onclick="openPageEditor()"><i class="fas fa-plus"></i> Add Page</button>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Title</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="pagesBody"></tbody>
+        </table>
+      </div>
+      <div class="modal-overlay hidden" id="pageEditorModal">
+        <div class="modal-box wide-modal">
+          <button class="modal-close" onclick="closePageEditor()"><i class="fas fa-times"></i></button>
+          <h2 id="pageModalTitle">Add Page</h2>
+          <div class="form-group"><label>Page Title</label><input type="text" id="pageTitle" placeholder="Page title"/></div>
+          <div class="form-group"><label>Content</label><div contenteditable="true" id="pageEditor" class="rich-editor" style="min-height:200px"></div></div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="pageStatus"><option value="Published">Published</option><option value="Draft">Draft</option></select>
+          </div>
+          <button class="btn-primary" onclick="savePage()">Save Page</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== USERS ====== -->
+    <section class="section-panel hidden" id="sec-users">
+      <div class="page-header-bar">
+        <h1>Users</h1>
+        <button class="btn-primary" onclick="openUserModal()"><i class="fas fa-user-plus"></i> Add User</button>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Avatar</th><th>Name</th><th>Email</th><th>Role</th><th>Posts</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+      <div class="modal-overlay hidden" id="userModal">
+        <div class="modal-box">
+          <button class="modal-close" onclick="closeUserModal()"><i class="fas fa-times"></i></button>
+          <h2 id="userModalTitle">Add User</h2>
+          <div class="form-group"><label>Full Name</label><input type="text" id="userName" placeholder="Full name"/></div>
+          <div class="form-group"><label>Email</label><input type="email" id="userEmail" placeholder="email@example.com"/></div>
+          <div class="form-group"><label>Role</label>
+            <select id="userRole">
+              <option value="Admin">Admin</option>
+              <option value="Editor">Editor</option>
+              <option value="Author">Author</option>
+              <option value="Subscriber">Subscriber</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Password</label><input type="password" id="userPass" placeholder="Password"/></div>
+          <button class="btn-primary" onclick="saveUser()">Save User</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== ADS MANAGEMENT ====== -->
+    <section class="section-panel hidden" id="sec-ads">
+      <div class="page-header-bar">
+        <h1>Ads Management</h1>
+        <button class="btn-primary" onclick="openAdModal()"><i class="fas fa-plus"></i> Add Ad</button>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Placement</th><th>Type</th><th>Status</th><th>Impressions</th><th>Actions</th></tr></thead>
+          <tbody id="adsBody"></tbody>
+        </table>
+      </div>
+      <div class="modal-overlay hidden" id="adModal">
+        <div class="modal-box">
+          <button class="modal-close" onclick="closeAdModal()"><i class="fas fa-times"></i></button>
+          <h2>Add Advertisement</h2>
+          <div class="form-group"><label>Ad Name</label><input type="text" id="adName" placeholder="Ad name"/></div>
+          <div class="form-group"><label>Placement</label>
+            <select id="adPlacement">
+              <option value="Header">Header</option><option value="Sidebar">Sidebar</option>
+              <option value="Footer">Footer</option><option value="In-Content">In-Content</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Type</label>
+            <select id="adType">
+              <option value="Image">Image Banner</option><option value="AdSense">Google AdSense</option>
+              <option value="Custom HTML">Custom HTML</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Ad Code / URL</label><textarea id="adCode" rows="4" placeholder="Paste ad code or image URL..."></textarea></div>
+          <div class="form-group"><label>Status</label>
+            <select id="adStatus"><option value="Active">Active</option><option value="Paused">Paused</option></select>
+          </div>
+          <button class="btn-primary" onclick="saveAd()">Save Ad</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SETTINGS ====== -->
+    <section class="section-panel hidden" id="sec-settings">
+      <div class="page-header-bar"><h1>Settings</h1></div>
+      <div class="tabs-wrap">
+        <div class="settings-tabs">
+          <button class="tab-btn active" onclick="switchTab('general',this)">General</button>
+          <button class="tab-btn" onclick="switchTab('social',this)">Social Media</button>
+          <button class="tab-btn" onclick="switchTab('profile',this)">Profile</button>
+          <button class="tab-btn" onclick="switchTab('security',this)">Security</button>
+        </div>
+        <!-- General -->
+        <div class="settings-tab-content" id="tab-general">
+          <div class="card">
+            <h3>General Settings</h3>
+            <div class="form-group"><label>Site Name</label><input type="text" id="siteName" placeholder="Site name"/></div>
+            <div class="form-group"><label>Site Tagline</label><input type="text" id="siteTagline" placeholder="Tagline"/></div>
+            <div class="form-group"><label>Site URL</label><input type="url" id="siteUrl" placeholder="https://example.com"/></div>
+            <div class="form-group"><label>Admin Email</label><input type="email" id="adminEmail" placeholder="admin@email.com"/></div>
+            <div class="form-group"><label>Posts Per Page</label><input type="number" id="postsPerPage" value="10" min="1" max="50"/></div>
+            <div class="form-group"><label>Default Category</label><select id="defaultCat"></select></div>
+            <button class="btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> Save Settings</button>
+          </div>
+        </div>
+        <!-- Social -->
+        <div class="settings-tab-content hidden" id="tab-social">
+          <div class="card">
+            <h3>Social Media Links</h3>
+            <div class="form-group"><label><i class="fab fa-facebook"></i> Facebook</label><input type="url" id="smFb" placeholder="https://facebook.com/..."/></div>
+            <div class="form-group"><label><i class="fab fa-twitter"></i> Twitter / X</label><input type="url" id="smTw" placeholder="https://twitter.com/..."/></div>
+            <div class="form-group"><label><i class="fab fa-instagram"></i> Instagram</label><input type="url" id="smIg" placeholder="https://instagram.com/..."/></div>
+            <div class="form-group"><label><i class="fab fa-linkedin"></i> LinkedIn</label><input type="url" id="smLi" placeholder="https://linkedin.com/..."/></div>
+            <div class="form-group"><label><i class="fab fa-youtube"></i> YouTube</label><input type="url" id="smYt" placeholder="https://youtube.com/..."/></div>
+            <button class="btn-primary" onclick="saveSocial()"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+        <!-- Profile -->
+        <div class="settings-tab-content hidden" id="tab-profile">
+          <div class="card">
+            <h3>Your Profile</h3>
+            <div class="form-group"><label>Display Name</label><input type="text" id="profileName" placeholder="Your name"/></div>
+            <div class="form-group"><label>Bio</label><textarea id="profileBio" rows="3" placeholder="Short bio..."></textarea></div>
+            <div class="form-group"><label>Profile Picture URL</label><input type="url" id="profilePic" placeholder="https://..."/></div>
+            <button class="btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> Save Profile</button>
+          </div>
+        </div>
+        <!-- Security -->
+        <div class="settings-tab-content hidden" id="tab-security">
+          <div class="card">
+            <h3>Change Password</h3>
+            <div class="form-group"><label>Current Password</label><input type="password" id="curPass" placeholder="Current password"/></div>
+            <div class="form-group"><label>New Password</label><input type="password" id="newPass" placeholder="New password"/></div>
+            <div class="form-group"><label>Confirm Password</label><input type="password" id="confPass" placeholder="Confirm new password"/></div>
+            <button class="btn-primary" onclick="changePassword()"><i class="fas fa-lock"></i> Update Password</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SEO ANALYZER ====== -->
+    <section class="section-panel hidden" id="sec-seo">
+      <div class="page-header-bar"><h1>SEO Analyzer</h1></div>
+      <div class="card">
+        <div class="form-group">
+          <label>Enter URL or Content to Analyze</label>
+          <textarea id="seoAnalyzeContent" rows="6" placeholder="Paste your content here for SEO analysis..."></textarea>
+        </div>
+        <div class="form-group"><label>Focus Keyword</label><input type="text" id="seoAnalyzeKw" placeholder="Enter main keyword"/></div>
+        <button class="btn-primary" onclick="runSEOAnalysis()"><i class="fas fa-search"></i> Analyze</button>
+        <div id="seoAnalysisResult" style="margin-top:24px"></div>
+      </div>
+    </section>
+
+    <!-- ====== ANALYTICS ====== -->
+    <section class="section-panel hidden" id="sec-analytics">
+      <div class="page-header-bar"><h1>Analytics</h1></div>
+      <div class="stats-row" id="analyticsStats"></div>
+      <div class="analytics-grid">
+        <div class="card">
+          <h3>Views Over Time (Last 7 Days)</h3>
+          <canvas id="viewsChart" height="80"></canvas>
+        </div>
+        <div class="card">
+          <h3>Traffic Sources</h3>
+          <canvas id="trafficChart" height="80"></canvas>
+        </div>
+        <div class="card full-width-card">
+          <h3>Top Posts by Views</h3>
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Title</th><th>Category</th><th>Views</th><th>Status</th></tr></thead>
+            <tbody id="topPostsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== BACKUP ====== -->
+    <section class="section-panel hidden" id="sec-backup">
+      <div class="page-header-bar"><h1>Backup &amp; Restore</h1></div>
+      <div class="two-col-layout">
+        <div class="card">
+          <h3><i class="fas fa-download"></i> Export Data</h3>
+          <p>Download all your site data as a JSON file for backup.</p>
+          <br/>
+          <button class="btn-primary" onclick="exportData()"><i class="fas fa-download"></i> Export All Data</button>
+          <br/><br/>
+          <button class="btn-outline" onclick="exportPosts()"><i class="fas fa-file-alt"></i> Export Posts Only</button>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-upload"></i> Import / Restore</h3>
+          <p>Restore your site data from a previously exported JSON file.</p>
+          <br/>
+          <input type="file" id="importFile" accept=".json" hidden onchange="importData(this)"/>
+          <button class="btn-primary" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload"></i> Import Data</button>
+          <br/><br/>
+          <button class="btn-danger" onclick="clearAllData()"><i class="fas fa-trash"></i> Clear All Data</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== MENUS ====== -->
+    <section class="section-panel hidden" id="sec-menus">
+      <div class="page-header-bar"><h1>Menus</h1></div>
+      <div class="card">
+        <h3>Main Navigation Menu</h3>
+        <div id="menuBuilder" class="menu-builder"></div>
+        <div class="form-group" style="margin-top:16px">
+          <input type="text" id="menuItemLabel" placeholder="Menu item label"/>
+          <input type="text" id="menuItemUrl" placeholder="URL (e.g. #credit-cards)"/>
+          <button class="btn-primary" onclick="addMenuItem()"><i class="fas fa-plus"></i> Add Item</button>
+        </div>
+        <button class="btn-primary" onclick="saveMenu()"><i class="fas fa-save"></i> Save Menu</button>
+      </div>
+    </section>
+
+  </div><!-- /admin-content -->
+</div><!-- /admin-main -->
+
+<!-- ====== YOUTUBE MODAL ====== -->
+<div class="modal-overlay hidden" id="ytModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeYouTubeModal()"><i class="fas fa-times"></i></button>
+    <h2><i class="fab fa-youtube youtube-red"></i> Insert YouTube Video</h2>
+    <div class="form-group">
+      <label>YouTube URL</label>
+      <input type="text" id="ytModalUrl" placeholder="https://www.youtube.com/watch?v=..."/>
+    </div>
+    <div class="form-group">
+      <label>Width</label>
+      <input type="text" id="ytWidth" value="100%" placeholder="e.g. 100% or 560"/>
+    </div>
+    <div class="form-group">
+      <label>Height</label>
+      <input type="text" id="ytHeight" value="315" placeholder="e.g. 315"/>
+    </div>
+    <button class="btn-primary" onclick="insertYouTubeInEditor()"><i class="fas fa-plus"></i> Insert</button>
+  </div>
+</div>
+
+<!-- ====== DELETE CONFIRM MODAL ====== -->
+<div class="modal-overlay hidden" id="confirmModal">
+  <div class="modal-box confirm-modal">
+    <div class="confirm-icon"><i class="fas fa-exclamation-triangle"></i></div>
+    <h2 id="confirmTitle">Confirm Delete</h2>
+    <p id="confirmMsg">Are you sure you want to delete this item?</p>
+    <div class="confirm-actions">
+      <button class="btn-outline" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-danger" id="confirmOkBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== TOAST ====== -->
+<div class="admin-toast" id="adminToast"></div>
+
+<!-- ====== LOGIN SCREEN ====== -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-brand">
+      <span class="logo-v" style="font-size:32px;width:52px;height:52px;">V</span>
+      <div><span style="font-size:24px;font-weight:800;color:#0f172a">visuya</span><br/><small>Admin Panel</small></div>
+    </div>
+    <h2>Welcome Back</h2>
+    <p>Sign in to manage your website</p>
+    <div class="form-group"><label>Email</label><input type="email" id="loginEmail" value="admin@visuya.com" placeholder="admin@visuya.com"/></div>
+    <div class="form-group"><label>Password</label><input type="password" id="loginPassword" value="admin123" placeholder="••••••••"/></div>
+    <div class="login-note"><i class="fas fa-info-circle"></i> Default: admin@visuya.com / admin123</div>
+    <button class="btn-primary full-btn" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+    <a href="index.html" style="display:block;text-align:center;margin-top:16px;font-size:13px;color:#64748b">← Back to Main Site</a>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>
